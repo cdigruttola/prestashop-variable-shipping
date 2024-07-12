@@ -1,49 +1,52 @@
 <?php
+/**
+ * Copyright since 2024 Carmine Di Gruttola
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    cdigruttola <c.digruttola@hotmail.it>
+ * @copyright Copyright since 2007 Carmine Di Gruttola
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
-// Avoid direct access to the file
-if (!defined('_PS_VERSION_'))
-	exit;
-
-class variableshipping extends CarrierModule
+class Variableshipping extends CarrierModule
 {
 	public  $id_carrier;
-
-	private $_html = '';
-	private $_postErrors = array();
-	private $_moduleName = 'variableshipping';
-
 
 	public function __construct()
 	{
 		$this->name = 'variableshipping';
 		$this->tab = 'shipping_logistics';
-		$this->version = '1.0';
+		$this->version = '1.0.0';
 		$this->author = 'Gennady Kovshenin';
+        $this->need_instance = 0;
+        $this->bootstrap = true;
 
-		parent::__construct ();
+        parent::__construct();
 
-		$this->displayName = $this->l('Variable Shipping');
-		$this->description = $this->l('Allows a variable shipping price to be set in the backend (for manual orders)');
+		$this->displayName = $this->trans('Variable Shipping', [], 'Modules.Variableshipping.Admin');
+		$this->description = $this->trans('Allows a variable shipping price to be set in the backend (for manual orders)', [], 'Modules.Variableshipping.Admin');
 
-		if (self::isInstalled($this->name))
-		{
-			// Getting carrier list
-			global $cookie;
-			$carriers = Carrier::getCarriers($cookie->id_lang, true, false, false, NULL, PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
+        $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
 
-			// Saving id carrier list
-			$id_carrier_list = array();
-			foreach($carriers as $carrier)
-				$id_carrier_list[] .= $carrier['id_carrier'];
-
-			// Testing if Carrier Id exists
-			$warning = array();
-			if (!in_array((int)(Configuration::get('VARIABLE_SHIPPING_CARRIER_ID')), $id_carrier_list))
-				$warning[] .= $this->l('"Custom Shipping Carrier"').' ';
-			if (count($warning))
-				$this->warning .= implode(' , ',$warning).$this->l('must be configured to use this module correctly').' ';
-		}
-	}
+    }
 
 	public function install()
 	{
@@ -69,13 +72,13 @@ class variableshipping extends CarrierModule
 			return false;
 		return true;
 	}
-	
+
 	public function uninstall()
 	{
 		// Uninstall
 		if (!parent::uninstall() || !$this->unregisterHook('displayBackOfficeHeader'))
 			return false;
-		
+
 		// Delete External Carrier
 		$Carrier1 = new Carrier((int)(Configuration::get('VARIABLE_SHIPPING_CARRIER_ID')));
 
@@ -168,19 +171,19 @@ class variableshipping extends CarrierModule
 		$out .= '<script>var variableshipping_ajax_url = "'.$this->_path.'ajax.php'.'";</script>';
 		return $out;
 	}
-	
+
 	public function getOrderShippingCost($params, $shipping_cost)
 	{
 		return $this->getOrderShippingCostExternal($params);
 	}
-	
+
 	public function getOrderShippingCostExternal($params)
 	{
 		$context = Context::getContext();
 		if (!$context->employee || !$context->employee->id)
 			return false;
 
-		$value = file_get_contents(sys_get_temp_dir() . '/psvs-' . _DB_NAME_ . '-' . $params->id . '-' . $params->id_customer);
+		$value = 10;
 		return $value ? round(floatval($value), 2) : 0.00;
 	}
 }
