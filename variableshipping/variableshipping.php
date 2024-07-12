@@ -28,7 +28,6 @@ if (!defined('_PS_VERSION_')) {
 
 class Variableshipping extends CarrierModule
 {
-    public $id_carrier;
 
     public function __construct()
     {
@@ -56,17 +55,19 @@ class Variableshipping extends CarrierModule
                 'deleted' => 0,
                 'shipping_handling' => false,
                 'range_behavior' => 0,
-                'delay' => ['fr' => 'Custom', 'en' => 'Custom', Language::getIsoById(Configuration::get('PS_LANG_DEFAULT')) => 'Custom'],
+                'delay' => [
+                    'it' => $this->trans('Custom', [], 'Modules.Variableshipping.Admin'),
+                ],
                 'id_zone' => 1,
                 'is_module' => true,
                 'shipping_external' => true,
                 'external_module_name' => 'variableshipping',
-                'need_range' => true,
+                'need_range' => false,
             ],
         ];
 
-        $id_carrier1 = $this->installExternalCarrier($carrierConfig[0]);
-        Configuration::updateValue('VARIABLE_SHIPPING_CARRIER_ID', (int) $id_carrier1);
+        $id_carrier = $this->installExternalCarrier($carrierConfig[0]);
+        Configuration::updateValue('VARIABLE_SHIPPING_CARRIER_ID', (int) $id_carrier);
         if (!parent::install() || !$this->registerHook('displayBackOfficeHeader')) {
             return false;
         }
@@ -82,29 +83,18 @@ class Variableshipping extends CarrierModule
         }
 
         // Delete External Carrier
-        $Carrier1 = new Carrier((int) Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'));
-
-        // If external carrier is default set other one as default
-        if (Configuration::get('PS_CARRIER_DEFAULT') == (int) $Carrier1->id) {
-            global $cookie;
-            $carriersD = Carrier::getCarriers($cookie->id_lang, true, false, false, null, PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
-            foreach ($carriersD as $carrierD) {
-                if ($carrierD['active'] and !$carrierD['deleted'] and ($carrierD['name'] != $this->_config['name'])) {
-                    Configuration::updateValue('PS_CARRIER_DEFAULT', $carrierD['id_carrier']);
-                }
-            }
-        }
+        $carrier = new Carrier((int) Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'));
 
         // Then delete Carrier
-        $Carrier1->deleted = 1;
-        if (!$Carrier1->update()) {
+        $carrier->deleted = true;
+        if (!$carrier->update()) {
             return false;
         }
 
         return true;
     }
 
-    public static function installExternalCarrier($config)
+    public function installExternalCarrier($config)
     {
         $carrier = new Carrier();
         $carrier->name = $config['name'];
@@ -120,50 +110,20 @@ class Variableshipping extends CarrierModule
         $carrier->external_module_name = $config['external_module_name'];
         $carrier->need_range = $config['need_range'];
 
-        $languages = Language::getLanguages(true);
+        $languages = Language::getLanguages();
         foreach ($languages as $language) {
-            if ($language['iso_code'] == 'fr') {
-                $carrier->delay[(int) $language['id_lang']] = $config['delay'][$language['iso_code']];
-            }
-            if ($language['iso_code'] == 'en') {
-                $carrier->delay[(int) $language['id_lang']] = $config['delay'][$language['iso_code']];
-            }
-            if ($language['iso_code'] == Language::getIsoById(Configuration::get('PS_LANG_DEFAULT'))) {
-                $carrier->delay[(int) $language['id_lang']] = $config['delay'][$language['iso_code']];
-            }
+            $carrier->delay[(int) $language['id_lang']] = $config['delay'][$language['iso_code']];
         }
 
         if ($carrier->add()) {
             $groups = Group::getGroups(true);
-            foreach ($groups as $group) {
-                Db::getInstance()->autoExecute(_DB_PREFIX_ . 'carrier_group', ['id_carrier' => (int) $carrier->id, 'id_group' => (int) $group['id_group']], 'INSERT');
-            }
-
-            $rangePrice = new RangePrice();
-            $rangePrice->id_carrier = $carrier->id;
-            $rangePrice->delimiter1 = '0';
-            $rangePrice->delimiter2 = '10000';
-            $rangePrice->add();
-
-            $rangeWeight = new RangeWeight();
-            $rangeWeight->id_carrier = $carrier->id;
-            $rangeWeight->delimiter1 = '0';
-            $rangeWeight->delimiter2 = '10000';
-            $rangeWeight->add();
+            $carrier->setGroups($groups);
 
             $zones = Zone::getZones(true);
             foreach ($zones as $zone) {
-                Db::getInstance()->autoExecute(_DB_PREFIX_ . 'carrier_zone', ['id_carrier' => (int) $carrier->id, 'id_zone' => (int) $zone['id_zone']], 'INSERT');
-                Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery', ['id_carrier' => (int) $carrier->id, 'id_range_price' => (int) $rangePrice->id, 'id_range_weight' => null, 'id_zone' => (int) $zone['id_zone'], 'price' => '0'], 'INSERT');
-                Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery', ['id_carrier' => (int) $carrier->id, 'id_range_price' => null, 'id_range_weight' => (int) $rangeWeight->id, 'id_zone' => (int) $zone['id_zone'], 'price' => '0'], 'INSERT');
+                $carrier->addZone($zone);
             }
 
-            // Copy Logo
-            if (!copy(dirname(__FILE__) . '/carrier.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int) $carrier->id . '.jpg')) {
-                return false;
-            }
-
-            // Return ID Carrier
             return (int) $carrier->id;
         }
 
