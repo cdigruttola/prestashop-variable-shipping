@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: true
+
+  cdigruttola.variableshipping.module:
+    class: Variableshipping
+    factory: [ 'Module', 'getInstanceByName' ]
+    public: false
+    arguments:
+      - 'variableshipping'

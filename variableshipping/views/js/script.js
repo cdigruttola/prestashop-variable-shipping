@@ -26,15 +26,18 @@
 function customPrice() {
   var carrier = $('#delivery-option-select option:selected').val();
   var obj_custom_price = $('input[name=custom_price]');
+  var total = $('.js-total-shipping-tax-inc');
   if (carrier == variableshipping_carrier_id) {
     obj_custom_price.closest('.form-group').show(100);
+    total.closest('.form-group').hide(100);
   } else {
     obj_custom_price.closest('.form-group').hide(100);
+    total.closest('.form-group').show(100);
   }
 }
 
 $(document).ready(function () {
-  var target = $('#delivery-option-select');
+  var select = $('#delivery-option-select');
 
   var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
@@ -49,12 +52,20 @@ $(document).ready(function () {
     subtree: true,
   };
 
-  observer.observe(target[0], config);
+  observer.observe(select[0], config);
   observer.disconnect();
-  observer.observe(target[0], config);
+  observer.observe(select[0], config);
 
-  target.change(function (e) {
+  select.change(function (e) {
     e.preventDefault();
     customPrice();
+  });
+
+  $('#create-order-button').click(function (e) {
+    var carrier = $('#delivery-option-select option:selected').val();
+    var obj_custom_price = $('input[name=custom_price]');
+    if (carrier == variableshipping_carrier_id) {
+      obj_custom_price.val();
+    }
   });
 });

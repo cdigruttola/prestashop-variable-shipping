@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Variableshipping' => $baseDir . '/variableshipping.php',
+    'cdigruttola\\Module\\VariableShipping\\Controller\\VariableShippingController' => $baseDir . '/src/Controller/VariableShippingController.php',
 );

@@ -1,0 +1,13 @@
+imports:
+  - { resource: ../common.yml }
+
+services:
+  _defaults:
+    public: true
+
+  # Controller
+  cdigruttola\Module\VariableShipping\Controller\VariableShippingController:
+    public: true
+    class: cdigruttola\Module\VariableShipping\Controller\VariableShippingController
+    arguments:
+      - "@=service('prestashop.adapter.legacy.context').getLanguages(false)"

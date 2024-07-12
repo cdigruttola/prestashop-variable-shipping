@@ -1,0 +1,7 @@
+custom_price:
+    path: /{cartId}/variable-shipping/custom-price
+    methods: [POST]
+    defaults:
+        _controller: 'cdigruttola\Module\VariableShipping\Controller\VariableShippingController::customPrice'
+    requirements:
+      cartId: \d+
