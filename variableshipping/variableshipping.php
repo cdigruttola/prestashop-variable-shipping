@@ -132,12 +132,17 @@ class Variableshipping extends CarrierModule
 
     public function hookDisplayBackOfficeHeader()
     {
-        $out = '<script type="text/javascript" src="' . $this->_path . 'script.js"></script>';
-        $out .= '<script>var variableshipping_carrier_id = ' . Configuration::get('VARIABLE_SHIPPING_CARRIER_ID') . ';</script>';
-        $out .= '<script>var variableshipping_token = "' . sha1(_COOKIE_KEY_ . 'variableshipping') . '";</script>';
-        $out .= '<script>var variableshipping_ajax_url = "' . $this->_path . 'ajax.php";</script>';
+        if ($this->active) {
+            $this->context->controller->addJS($this->_path . 'views/js/script.js');
 
-        return $out;
+            Media::addJsDef(
+                [
+                    'variableshipping_carrier_id' => Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'),
+                    'variableshipping_token' => sha1(_COOKIE_KEY_ . 'variableshipping'),
+                    'variableshipping_ajax_url' =>  $this->_path . 'ajax.php',
+                ]
+            );
+        }
     }
 
     public function getOrderShippingCost($params, $shipping_cost)
