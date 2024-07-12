@@ -65,7 +65,17 @@ $(document).ready(function () {
     var carrier = $('#delivery-option-select option:selected').val();
     var obj_custom_price = $('input[name=custom_price]');
     if (carrier == variableshipping_carrier_id) {
-      obj_custom_price.val();
+      const params = {
+        cartId: $('#cart-block').data('cartId'),
+        custom_price: obj_custom_price.val(),
+      };
+
+      const request = $.get(window.prestashop.instance.router.generate('variable_shipping_custom_price'), params,);
+      request
+        .then((response) => {
+        })
+        .catch((response) => {
+        });
     }
   });
 });

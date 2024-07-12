@@ -1,4 +1,4 @@
-custom_price:
+variable_shipping_custom_price:
     path: /{cartId}/variable-shipping/custom-price
     methods: [POST]
     defaults:
