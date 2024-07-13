@@ -65,6 +65,8 @@ class Variableshipping extends CarrierModule
             'need_range' => true,
         ];
 
+        $id_carrier = $this->installExternalCarrier($carrierConfig);
+        Configuration::updateValue('VARIABLE_SHIPPING_CARRIER_ID', (int) $id_carrier);
 
         include dirname(__FILE__) . '/sql/install.php';
 
@@ -83,6 +85,13 @@ class Variableshipping extends CarrierModule
         }
 
         // Delete External Carrier
+        $carrier = new Carrier((int) Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'));
+
+        // Then delete Carrier
+        $carrier->deleted = true;
+        if (!$carrier->update()) {
+            return false;
+        }
 
         include dirname(__FILE__) . '/sql/uninstall.php';
 
