@@ -8,3 +8,10 @@ services:
     public: false
     arguments:
       - 'variableshipping'
+
+  cdigruttola.variableshipping.repository.cart_variable_shipping:
+    class: cdigruttola\Module\VariableShipping\Repository\CartVariableShippingRepository
+    public: true
+    factory: ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments:
+      - cdigruttola\Module\VariableShipping\Entity\CartVariableShipping

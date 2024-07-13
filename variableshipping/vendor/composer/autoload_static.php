@@ -24,6 +24,8 @@ class ComposerStaticInit44e6364d2ec1d741ddc4996f81b045c8
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Variableshipping' => __DIR__ . '/../..' . '/variableshipping.php',
         'cdigruttola\\Module\\VariableShipping\\Controller\\VariableShippingController' => __DIR__ . '/../..' . '/src/Controller/VariableShippingController.php',
+        'cdigruttola\\Module\\VariableShipping\\Entity\\CartVariableShipping' => __DIR__ . '/../..' . '/src/Entity/CartVariableShipping.php',
+        'cdigruttola\\Module\\VariableShipping\\Repository\\CartVariableShippingRepository' => __DIR__ . '/../..' . '/src/Repository/CartVariableShippingRepository.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

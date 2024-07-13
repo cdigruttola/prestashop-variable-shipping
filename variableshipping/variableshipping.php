@@ -61,12 +61,13 @@ class Variableshipping extends CarrierModule
             'id_zone' => 1,
             'is_module' => true,
             'shipping_external' => true,
-            'external_module_name' => 'variableshipping',
+            'external_module_name' => $this->name,
             'need_range' => true,
         ];
 
-        $id_carrier = $this->installExternalCarrier($carrierConfig);
-        Configuration::updateValue('VARIABLE_SHIPPING_CARRIER_ID', (int) $id_carrier);
+
+        include dirname(__FILE__) . '/sql/install.php';
+
         if (!parent::install() || !$this->registerHook('displayBackOfficeHeader')|| !$this->registerHook('actionCarrierUpdate')) {
             return false;
         }
@@ -82,13 +83,8 @@ class Variableshipping extends CarrierModule
         }
 
         // Delete External Carrier
-        $carrier = new Carrier((int) Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'));
 
-        // Then delete Carrier
-        $carrier->deleted = true;
-        if (!$carrier->update()) {
-            return false;
-        }
+        include dirname(__FILE__) . '/sql/uninstall.php';
 
         return true;
     }
