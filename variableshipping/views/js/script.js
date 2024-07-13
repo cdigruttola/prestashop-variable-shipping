@@ -43,10 +43,6 @@ $(document).ready(function () {
     return;
   }
 
-  window.prestashop.component.initComponents([
-    'Router',
-  ]);
-
   var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       if (mutation.type === 'childList') {
@@ -78,7 +74,7 @@ $(document).ready(function () {
         custom_price: obj_custom_price.val(),
       };
 
-      const request = $.post(window.prestashop.instance.router.generate('variable_shipping_custom_price'), params,);
+      const request = $.post(variableshipping_ajax_url, params,);
       request
         .then((response) => {
           console.log(response);

@@ -22,6 +22,9 @@
  * @copyright Copyright since 2007 Carmine Di Gruttola
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
+
+use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -59,7 +62,7 @@ class Variableshipping extends CarrierModule
             'is_module' => true,
             'shipping_external' => true,
             'external_module_name' => 'variableshipping',
-            'need_range' => false,
+            'need_range' => true,
         ];
 
         $id_carrier = $this->installExternalCarrier($carrierConfig);
@@ -131,7 +134,7 @@ class Variableshipping extends CarrierModule
             Media::addJsDef(
                 [
                     'variableshipping_carrier_id' => Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'),
-                    'variableshipping_ajax_url' =>  $this->_path . 'ajax.php',
+                    'variableshipping_ajax_url' =>  SymfonyContainer::getInstance()->get('router')->generate('variable_shipping_custom_price'),
                 ]
             );
         }

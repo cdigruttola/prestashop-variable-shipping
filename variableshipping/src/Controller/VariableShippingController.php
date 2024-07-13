@@ -47,7 +47,7 @@ class VariableShippingController extends FrameworkBundleAdminController
         $this->languages = $languages;
     }
 
-    public function customPrice(Request $request, int $cartId)
+    public function customPrice(Request $request)
     {
         \PrestaShopLogger::addLog(var_export(\Tools::getAllValues(), true));
     }
