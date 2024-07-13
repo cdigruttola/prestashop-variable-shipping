@@ -31,6 +31,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+use cdigruttola\Module\VariableShipping\Entity\CartVariableShipping;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,10 +51,26 @@ class VariableShippingController extends FrameworkBundleAdminController
 
     public function customPrice(Request $request)
     {
-        \Tools::getValue('cartId');
-        \Tools::getValue('custom_price');
+        $cartId = (int) \Tools::getValue('cartId');
+        $custom_price = (float) \Tools::getValue('custom_price');
 
-        // TODO SAVE INFO
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+
+        /** @var CartVariableShipping $entity */
+        $entity = $this->getDoctrine()
+            ->getRepository(CartVariableShipping::class)
+            ->find($cartId);
+
+        if (!empty($entity)) {
+            $entity->setCustomPrice($custom_price);
+        } else {
+            $entity = new CartVariableShipping();
+            $entity->setCustomPrice($custom_price);
+            $entity->setIdCart($cartId);
+        }
+        $entityManager->persist($entity);
+        $entityManager->flush();
+
         return $this->json(['message' => $this->trans('Successful update.', 'Admin.Notifications.Success')], Response::HTTP_OK);
     }
 

@@ -23,7 +23,10 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
+use cdigruttola\Module\VariableShipping\Entity\CartVariableShipping;
+use cdigruttola\Module\VariableShipping\Repository\CartVariableShippingRepository;
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -173,8 +176,38 @@ class Variableshipping extends CarrierModule
             return false;
         }
 
-        $value = 10;
+        /** @var CartVariableShippingRepository $repository */
+        $repository = $this->getService('cdigruttola.variableshipping.repository.cart_variable_shipping');
+
+        /** @var CartVariableShipping $entity */
+        $entity = $repository->findOneBy(['id_cart' => $params->id]);
+
+        $value= 0;
+        if (!empty($entity))
+        {
+            $value = $entity->getCustomPrice();
+        }
 
         return $value ? round(floatval($value), 2) : 0.00;
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T>|string $serviceName
+     *
+     * @return T|object|null
+     */
+    public function getService($serviceName)
+    {
+        try {
+            return $this->get($serviceName);
+        } catch (ServiceNotFoundException $exception) {
+            if (_PS_MODE_DEV_) {
+                throw $exception;
+            }
+
+            return null;
+        }
     }
 }
