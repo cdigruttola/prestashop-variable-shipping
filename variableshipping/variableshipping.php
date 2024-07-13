@@ -49,26 +49,22 @@ class Variableshipping extends CarrierModule
     public function install()
     {
         $carrierConfig = [
-            0 => ['name' => 'Variable Shipping',
-                'id_tax_rules_group' => 0,
-                'active' => true,
-                'deleted' => 0,
-                'shipping_handling' => false,
-                'range_behavior' => 0,
-                'delay' => [
-                    'it' => $this->trans('Custom', [], 'Modules.Variableshipping.Admin'),
-                ],
-                'id_zone' => 1,
-                'is_module' => true,
-                'shipping_external' => true,
-                'external_module_name' => 'variableshipping',
-                'need_range' => false,
-            ],
+            'name' => 'Variable Shipping',
+            'id_tax_rules_group' => 0,
+            'active' => true,
+            'deleted' => 0,
+            'shipping_handling' => false,
+            'range_behavior' => 0,
+            'id_zone' => 1,
+            'is_module' => true,
+            'shipping_external' => true,
+            'external_module_name' => 'variableshipping',
+            'need_range' => false,
         ];
 
-        $id_carrier = $this->installExternalCarrier($carrierConfig[0]);
+        $id_carrier = $this->installExternalCarrier($carrierConfig);
         Configuration::updateValue('VARIABLE_SHIPPING_CARRIER_ID', (int) $id_carrier);
-        if (!parent::install() || !$this->registerHook('displayBackOfficeHeader')) {
+        if (!parent::install() || !$this->registerHook('displayBackOfficeHeader')|| !$this->registerHook('actionCarrierUpdate')) {
             return false;
         }
 
@@ -102,7 +98,6 @@ class Variableshipping extends CarrierModule
         $carrier->id_zone = $config['id_zone'];
         $carrier->active = $config['active'];
         $carrier->deleted = $config['deleted'];
-        $carrier->delay = $config['delay'];
         $carrier->shipping_handling = $config['shipping_handling'];
         $carrier->range_behavior = $config['range_behavior'];
         $carrier->is_module = $config['is_module'];
@@ -112,18 +107,17 @@ class Variableshipping extends CarrierModule
 
         $languages = Language::getLanguages();
         foreach ($languages as $language) {
-            $carrier->delay[(int) $language['id_lang']] = $config['delay'][$language['iso_code']];
+            $carrier->delay[(int) $language['id_lang']] = $this->trans('Custom', [], 'Modules.Variableshipping.Admin', $language['locale']);
         }
 
         if ($carrier->add()) {
-            $groups = Group::getGroups(true);
-            $carrier->setGroups($groups);
+            $groupIds = Group::getAllGroupIds();
+            $carrier->setGroups($groupIds);
 
             $zones = Zone::getZones(true);
             foreach ($zones as $zone) {
-                $carrier->addZone($zone);
+                $carrier->addZone($zone['id_zone']);
             }
-
             return (int) $carrier->id;
         }
 
@@ -134,14 +128,28 @@ class Variableshipping extends CarrierModule
     {
         if ($this->active) {
             $this->context->controller->addJS($this->_path . 'views/js/script.js');
-
             Media::addJsDef(
                 [
                     'variableshipping_carrier_id' => Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'),
-                    'variableshipping_token' => sha1(_COOKIE_KEY_ . 'variableshipping'),
                     'variableshipping_ajax_url' =>  $this->_path . 'ajax.php',
                 ]
             );
+        }
+    }
+
+    /**
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function hookActionCarrierUpdate($params)
+    {
+        if (!$this->active) {
+            return;
+        }
+        $id_carrier_old = (int) $params['id_carrier'];
+        $id_carrier_new = (int) $params['carrier']->id;
+        if ($id_carrier_old == (int) Configuration::get('VARIABLE_SHIPPING_CARRIER_ID')) {
+            Configuration::updateValue('VARIABLE_SHIPPING_CARRIER_ID', $id_carrier_new);
         }
     }
 

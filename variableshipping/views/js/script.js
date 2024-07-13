@@ -39,6 +39,14 @@ function customPrice() {
 $(document).ready(function () {
   var select = $('#delivery-option-select');
 
+  if (select[0] === undefined) {
+    return;
+  }
+
+  window.prestashop.component.initComponents([
+    'Router',
+  ]);
+
   var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       if (mutation.type === 'childList') {
@@ -61,7 +69,7 @@ $(document).ready(function () {
     customPrice();
   });
 
-  $('#create-order-button').click(function (e) {
+  $('input[name=custom_price]').change(function (e) {
     var carrier = $('#delivery-option-select option:selected').val();
     var obj_custom_price = $('input[name=custom_price]');
     if (carrier == variableshipping_carrier_id) {
@@ -70,9 +78,10 @@ $(document).ready(function () {
         custom_price: obj_custom_price.val(),
       };
 
-      const request = $.get(window.prestashop.instance.router.generate('variable_shipping_custom_price'), params,);
+      const request = $.post(window.prestashop.instance.router.generate('variable_shipping_custom_price'), params,);
       request
         .then((response) => {
+          console.log(response);
         })
         .catch((response) => {
         });
