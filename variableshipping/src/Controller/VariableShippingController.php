@@ -33,6 +33,7 @@ if (!defined('_PS_VERSION_')) {
 
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class VariableShippingController extends FrameworkBundleAdminController
 {
@@ -49,7 +50,11 @@ class VariableShippingController extends FrameworkBundleAdminController
 
     public function customPrice(Request $request)
     {
-        \PrestaShopLogger::addLog(var_export(\Tools::getAllValues(), true));
+        \Tools::getValue('cartId');
+        \Tools::getValue('custom_price');
+
+        // TODO SAVE INFO
+        return $this->json(['message' => $this->trans('Successful update.', 'Admin.Notifications.Success')], Response::HTTP_OK);
     }
 
 }

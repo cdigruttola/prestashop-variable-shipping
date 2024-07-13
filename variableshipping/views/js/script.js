@@ -71,7 +71,7 @@ $(document).ready(function () {
     if (carrier == variableshipping_carrier_id) {
       const params = {
         cartId: $('#cart-block').data('cartId'),
-        custom_price: obj_custom_price.val(),
+        custom_price: parseFloat(obj_custom_price.val()),
       };
 
       const request = $.post(variableshipping_ajax_url, params,);
