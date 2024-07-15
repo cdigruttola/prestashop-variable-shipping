@@ -39,7 +39,7 @@ class Variableshipping extends CarrierModule
         $this->name = 'variableshipping';
         $this->tab = 'shipping_logistics';
         $this->version = '1.0.0';
-        $this->author = 'Gennady Kovshenin';
+        $this->author = 'cdigruttola';
         $this->need_instance = 0;
         $this->bootstrap = true;
 
