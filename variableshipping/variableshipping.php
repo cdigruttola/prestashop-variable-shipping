@@ -176,6 +176,10 @@ class Variableshipping extends CarrierModule
             return false;
         }
 
+        if (!isset($params) || !isset($params->id)) {
+            return false;
+        }
+
         /** @var CartVariableShippingRepository $repository */
         $repository = $this->getService('cdigruttola.variableshipping.repository.cart_variable_shipping');
 
