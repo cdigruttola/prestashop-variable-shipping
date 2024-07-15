@@ -46,7 +46,6 @@ class CartVariableShipping
      * @ORM\Id
      *
      * @ORM\Column(name="id_cart", type="integer")
-     *
      */
     private $id_cart;
 
@@ -80,5 +79,4 @@ class CartVariableShipping
     {
         $this->custom_price = $custom_price;
     }
-
 }

@@ -28,7 +28,6 @@ declare(strict_types=1);
 namespace cdigruttola\Module\VariableShipping\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
 
 if (!defined('_PS_VERSION_')) {
     exit;

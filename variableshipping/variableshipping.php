@@ -34,7 +34,6 @@ if (!defined('_PS_VERSION_')) {
 
 class Variableshipping extends CarrierModule
 {
-
     public function __construct()
     {
         $this->name = 'variableshipping';
@@ -73,7 +72,7 @@ class Variableshipping extends CarrierModule
 
         include dirname(__FILE__) . '/sql/install.php';
 
-        if (!parent::install() || !$this->registerHook('displayBackOfficeHeader')|| !$this->registerHook('actionCarrierUpdate')) {
+        if (!parent::install() || !$this->registerHook('displayBackOfficeHeader') || !$this->registerHook('actionCarrierUpdate')) {
             return false;
         }
 
@@ -129,6 +128,7 @@ class Variableshipping extends CarrierModule
             foreach ($zones as $zone) {
                 $carrier->addZone($zone['id_zone']);
             }
+
             return (int) $carrier->id;
         }
 
@@ -142,7 +142,7 @@ class Variableshipping extends CarrierModule
             Media::addJsDef(
                 [
                     'variableshipping_carrier_id' => Configuration::get('VARIABLE_SHIPPING_CARRIER_ID'),
-                    'variableshipping_ajax_url' =>  SymfonyContainer::getInstance()->get('router')->generate('variable_shipping_custom_price'),
+                    'variableshipping_ajax_url' => SymfonyContainer::getInstance()->get('router')->generate('variable_shipping_custom_price'),
                 ]
             );
         }
@@ -186,9 +186,8 @@ class Variableshipping extends CarrierModule
         /** @var CartVariableShipping $entity */
         $entity = $repository->findOneBy(['id_cart' => $params->id]);
 
-        $value= 0;
-        if (!empty($entity))
-        {
+        $value = 0;
+        if (!empty($entity)) {
             $value = $entity->getCustomPrice();
         }
 

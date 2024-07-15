@@ -73,5 +73,4 @@ class VariableShippingController extends FrameworkBundleAdminController
 
         return $this->json(['message' => $this->trans('Successful update.', 'Admin.Notifications.Success')], Response::HTTP_OK);
     }
-
 }
