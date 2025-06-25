@@ -8,6 +8,6 @@ services:
   # Controller
   cdigruttola\Module\VariableShipping\Controller\VariableShippingController:
     public: true
+    autowire: true
+    autoconfigure: true
     class: cdigruttola\Module\VariableShipping\Controller\VariableShippingController
-    arguments:
-      - "@=service('prestashop.adapter.legacy.context').getLanguages(false)"

@@ -38,7 +38,7 @@ class Variableshipping extends CarrierModule
     {
         $this->name = 'variableshipping';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.0';
+        $this->version = '2.0.0';
         $this->author = 'cdigruttola';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -48,7 +48,7 @@ class Variableshipping extends CarrierModule
         $this->displayName = $this->trans('Variable Shipping', [], 'Modules.Variableshipping.Admin');
         $this->description = $this->trans('Allows a variable shipping price to be set in the backend (for manual orders)', [], 'Modules.Variableshipping.Admin');
 
-        $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '9.0.0', 'max' => _PS_VERSION_];
     }
 
     public function install()

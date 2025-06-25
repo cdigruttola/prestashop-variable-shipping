@@ -2,7 +2,7 @@
         <module>
             <name>variableshipping</name>
             <displayName><![CDATA[Variable Shipping]]></displayName>
-            <version><![CDATA[1.0]]></version>
+            <version><![CDATA[2.0.0]]></version>
             <description><![CDATA[Allows a variable shipping price to be set in the backend (for manual orders)]]></description>
             <author><![CDATA[Gennady Kovshenin]]></author>
             <tab><![CDATA[shipping_logistics]]></tab>

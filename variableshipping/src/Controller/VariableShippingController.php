@@ -32,32 +32,21 @@ if (!defined('_PS_VERSION_')) {
 }
 
 use cdigruttola\Module\VariableShipping\Entity\CartVariableShipping;
-use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+use PrestaShopBundle\Controller\Admin\PrestaShopAdminController;
 use Symfony\Component\HttpFoundation\Response;
 
-class VariableShippingController extends FrameworkBundleAdminController
+class VariableShippingController extends PrestaShopAdminController
 {
-    /**
-     * @var array
-     */
-    private $languages;
-
-    public function __construct($languages)
-    {
-        parent::__construct();
-        $this->languages = $languages;
-    }
-
-    public function customPrice(Request $request)
+    public function customPrice()
     {
         $cartId = (int) \Tools::getValue('cartId');
         $custom_price = (float) \Tools::getValue('custom_price');
 
-        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $entityManager = $this->container->get(EntityManagerInterface::class);
 
         /** @var CartVariableShipping $entity */
-        $entity = $this->getDoctrine()
+        $entity =$entityManager
             ->getRepository(CartVariableShipping::class)
             ->find($cartId);
 
@@ -71,6 +60,13 @@ class VariableShippingController extends FrameworkBundleAdminController
         $entityManager->persist($entity);
         $entityManager->flush();
 
-        return $this->json(['message' => $this->trans('Successful update.', 'Admin.Notifications.Success')], Response::HTTP_OK);
+        return $this->json(['message' => $this->trans('Successful update.', [], 'Admin.Notifications.Success')], Response::HTTP_OK);
+    }
+
+    public static function getSubscribedServices(): array
+    {
+        return parent::getSubscribedServices() + [
+                EntityManagerInterface::class => EntityManagerInterface::class,
+            ];
     }
 }
