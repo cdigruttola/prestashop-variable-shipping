@@ -4,7 +4,7 @@
             <displayName><![CDATA[Variable Shipping]]></displayName>
             <version><![CDATA[2.0.0]]></version>
             <description><![CDATA[Allows a variable shipping price to be set in the backend (for manual orders)]]></description>
-            <author><![CDATA[Gennady Kovshenin]]></author>
+            <author><![CDATA[cdigruttola]]></author>
             <tab><![CDATA[shipping_logistics]]></tab>
             <is_configurable>0</is_configurable>
             <need_instance>1</need_instance>

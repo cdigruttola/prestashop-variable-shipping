@@ -191,7 +191,7 @@ class Variableshipping extends CarrierModule
             $value = $entity->getCustomPrice();
         }
 
-        return $value ? round(floatval($value), 2) : 0.00;
+        return $value ? round((float) $value, 2) : 0.00;
     }
 
     /**
