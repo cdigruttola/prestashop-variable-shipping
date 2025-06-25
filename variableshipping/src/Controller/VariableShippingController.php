@@ -50,7 +50,7 @@ class VariableShippingController extends PrestaShopAdminController
             ->getRepository(CartVariableShipping::class)
             ->find($cartId);
 
-        if (!empty($entity)) {
+        if ($entity !== null) {
             $entity->setCustomPrice($custom_price);
         } else {
             $entity = new CartVariableShipping();
