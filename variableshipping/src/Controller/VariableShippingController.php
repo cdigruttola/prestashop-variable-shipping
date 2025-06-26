@@ -45,7 +45,7 @@ class VariableShippingController extends PrestaShopAdminController
 
         $entityManager = $this->container->get(EntityManagerInterface::class);
 
-        /** @var CartVariableShipping $entity */
+        /** @var CartVariableShipping|null $entity */
         $entity = $entityManager
             ->getRepository(CartVariableShipping::class)
             ->find($cartId);

@@ -64,7 +64,7 @@ class Variableshipping extends CarrierModule
             'is_module' => true,
             'shipping_external' => true,
             'external_module_name' => $this->name,
-            'need_range' => true,
+            'need_range' => false,
         ];
 
         $id_carrier = $this->installExternalCarrier($carrierConfig);
@@ -104,8 +104,8 @@ class Variableshipping extends CarrierModule
     {
         $carrier = new Carrier();
         $carrier->name = $config['name'];
-        $carrier->id_tax_rules_group = $config['id_tax_rules_group'];
-        $carrier->id_zone = $config['id_zone'];
+        // $carrier->id_tax_rules_group = $config['id_tax_rules_group'];
+        // $carrier->id_zone = $config['id_zone'];
         $carrier->active = $config['active'];
         $carrier->deleted = $config['deleted'];
         $carrier->shipping_handling = $config['shipping_handling'];
@@ -171,8 +171,7 @@ class Variableshipping extends CarrierModule
 
     public function getOrderShippingCostExternal($params)
     {
-        $context = Context::getContext();
-        if (!$context->employee || !$context->employee->id) {
+        if (!$this->context->employee || !$this->context->employee->id) {
             return false;
         }
 
@@ -183,7 +182,7 @@ class Variableshipping extends CarrierModule
         /** @var CartVariableShippingRepository $repository */
         $repository = $this->getService('cdigruttola.variableshipping.repository.cart_variable_shipping');
 
-        /** @var CartVariableShipping $entity */
+        /** @var CartVariableShipping|null $entity */
         $entity = $repository->findOneBy(['id_cart' => $params->id]);
 
         $value = 0;
@@ -195,11 +194,9 @@ class Variableshipping extends CarrierModule
     }
 
     /**
-     * @template T
+     * @param string $serviceName
      *
-     * @param class-string<T>|string $serviceName
-     *
-     * @return T|object|null
+     * @return object|null
      */
     public function getService($serviceName)
     {
