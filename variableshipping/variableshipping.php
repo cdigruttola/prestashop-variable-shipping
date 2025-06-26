@@ -64,7 +64,8 @@ class Variableshipping extends CarrierModule
             'is_module' => true,
             'shipping_external' => true,
             'external_module_name' => $this->name,
-            'need_range' => false,
+            'shipping_method' => Carrier::SHIPPING_METHOD_WEIGHT,
+            'need_range' => true,
         ];
 
         $id_carrier = $this->installExternalCarrier($carrierConfig);
@@ -112,6 +113,7 @@ class Variableshipping extends CarrierModule
         $carrier->range_behavior = $config['range_behavior'];
         $carrier->is_module = $config['is_module'];
         $carrier->shipping_external = $config['shipping_external'];
+        $carrier->shipping_method = $config['shipping_method'];
         $carrier->external_module_name = $config['external_module_name'];
         $carrier->need_range = $config['need_range'];
 
@@ -121,6 +123,12 @@ class Variableshipping extends CarrierModule
         }
 
         if ($carrier->add()) {
+            $rw = new RangeWeight();
+            $rw->id_carrier = $carrier->id;
+            $rw->delimiter1 = 0;
+            $rw->delimiter2 = 1000;
+            $rw->add();
+
             $groupIds = Group::getAllGroupIds();
             $carrier->setGroups($groupIds);
 
