@@ -8,13 +8,13 @@ class ComposerAutoloaderInit44e6364d2ec1d741ddc4996f81b045c8
 
     public static function loadClassLoader($class)
     {
-        if ('Composer\Autoload\ClassLoader' === $class) {
+        if ('modules\bwlauncher\vendor\composer\ClassLoader' === $class) {
             require __DIR__ . '/ClassLoader.php';
         }
     }
 
     /**
-     * @return \Composer\Autoload\ClassLoader
+     * @return \modules\bwlauncher\vendor\composer\ClassLoader
      */
     public static function getLoader()
     {
@@ -25,7 +25,7 @@ class ComposerAutoloaderInit44e6364d2ec1d741ddc4996f81b045c8
         require __DIR__ . '/platform_check.php';
 
         spl_autoload_register(array('ComposerAutoloaderInit44e6364d2ec1d741ddc4996f81b045c8', 'loadClassLoader'), true, false);
-        self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(__DIR__));
+        self::$loader = $loader = new \modules\bwlauncher\vendor\composer\ClassLoader(\dirname(__DIR__));
         spl_autoload_unregister(array('ComposerAutoloaderInit44e6364d2ec1d741ddc4996f81b045c8', 'loadClassLoader'));
 
         require __DIR__ . '/autoload_static.php';
