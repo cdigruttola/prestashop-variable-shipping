@@ -4,19 +4,17 @@
 
 namespace Composer\Autoload;
 
-use modules\bwlauncher\vendor\composer\ClassLoader;
-
 class ComposerStaticInit44e6364d2ec1d741ddc4996f81b045c8
 {
     public static $prefixLengthsPsr4 = array (
-        'c' =>
+        'c' => 
         array (
             'cdigruttola\\Module\\VariableShipping\\' => 36,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'cdigruttola\\Module\\VariableShipping\\' =>
+        'cdigruttola\\Module\\VariableShipping\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
