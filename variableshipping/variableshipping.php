@@ -51,6 +51,10 @@ class Variableshipping extends CarrierModule
         $this->ps_versions_compliancy = ['min' => '9.0.0', 'max' => _PS_VERSION_];
     }
 
+    public function isUsingNewTranslationSystem()
+    {
+        return true;
+    }
     public function install()
     {
         $carrierConfig = [
